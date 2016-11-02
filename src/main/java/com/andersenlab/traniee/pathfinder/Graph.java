@@ -96,6 +96,7 @@ public class Graph {
 
 				if (i == j) {
 					continue;
+				
 				} else {
 					log.info("Введите расстояние (" + i + ") - (" + j + "): ");
 					if (sc.hasNextInt()) {

@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		 //TODO Auto-generated method stub
 		Graph random = new Graph(20);
-//		Graph manual = new Graph(4);
+		Graph manual = new Graph(4);
 		
 		Graph.buildRandomGraph(random);
 		Graph.printGraph(random);
@@ -15,10 +15,11 @@ public class Main {
 		Graph.printGraph(random);
 		Graph.printGraphPp(random);
 		
-//		Graph.buildUsersGraph(manual.graph);
-//		Graph.printGraph(manual.graph);
-//		Graph.findShortWay(manual.graph);
-//		Graph.printGraph(manual.graph);
+		Graph.buildUsersGraph(manual);
+		Graph.printGraph(manual);
+		Graph.findShortWay(manual);
+		Graph.printGraph(manual);
+		Graph.printGraphPp(manual);
 	}
 
 }
