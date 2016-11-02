@@ -91,19 +91,19 @@ public class Graph {
 		Scanner sc = new Scanner(System.in);
 
 		for (int i = 0; i < g.n; ++i) {
-			System.out.println();
+			
 			for (int j = 0; j < g.n; ++j) {
 
 				if (i == j) {
 					continue;
 				} else {
-					System.out.print("Введите расстояние (" + i + ") - (" + j + "): ");
+					log.info("Введите расстояние (" + i + ") - (" + j + "): ");
 					if (sc.hasNextInt()) {
 
 						g.graph[i][j] = sc.nextInt();
 
 					} else {
-						System.out.println("какой-то текст");
+						log.info("какой-то текст");
 					}
 
 				}
