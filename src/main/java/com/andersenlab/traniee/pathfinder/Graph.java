@@ -20,7 +20,7 @@ public class Graph {
 	public Graph() {
 
 		n = 10;
-		graph = new int[n][n];
+		setGraph(new int[n][n]);
 		pathpoint = new int[n][n];
 		createNullMarch();
 		createNullgraph();
@@ -30,7 +30,7 @@ public class Graph {
 	public Graph(int n) {
 
 		this.n = n;
-		graph = new int[n][n];
+		setGraph(new int[n][n]);
 		pathpoint = new int[n][n];
 		createNullMarch();
 		createNullgraph();
@@ -57,11 +57,11 @@ public class Graph {
 				if (i == j)
 					continue;
 
-				graph[i][j] = block;
+				getGraph()[i][j] = block;
 			}
 
 		}
-		return graph;
+		return getGraph();
 	};
 
 	public static Graph buildRandomGraph(Graph g) {
@@ -76,9 +76,9 @@ public class Graph {
 
 					continue;
 				} else if (r.nextInt(2) > 0) {
-					g.graph[i][j] = r.nextInt(50) + 1;
+					g.getGraph()[i][j] = r.nextInt(50) + 1;
 				}
-				g.graph[j][i] = g.graph[i][j];
+				g.getGraph()[j][i] = g.getGraph()[i][j];
 
 			}
 		}
@@ -101,7 +101,7 @@ public class Graph {
 					log.info("Введите расстояние (" + i + ") - (" + j + "): ");
 					if (sc.hasNextInt()) {
 
-						g.graph[i][j] = sc.nextInt();
+						g.getGraph()[i][j] = sc.nextInt();
 
 					} else {
 						log.info("какой-то текст");
@@ -119,7 +119,7 @@ public class Graph {
 
 		log.info("Start print graph:");
 		for (int i = 0; i < g.n; ++i) {
-			log.info(Arrays.toString(g.graph[i]));
+			log.info(Arrays.toString(g.getGraph()[i]));
 
 		}
 
@@ -143,9 +143,9 @@ public class Graph {
 
 				for (int k = 0; k < g.n; ++k) {
 
-					if (g.graph[j][k] > g.graph[j][i] + g.graph[i][k]) {
+					if (g.getGraph()[j][k] > g.getGraph()[j][i] + g.getGraph()[i][k]) {
 
-						g.graph[j][k] = g.graph[j][i] + g.graph[i][k];
+						g.getGraph()[j][k] = g.getGraph()[j][i] + g.getGraph()[i][k];
 						g.pathpoint[j][k] = i;
 					}
 
@@ -153,6 +153,14 @@ public class Graph {
 			}
 		}
 		return g;
+	}
+
+	public int[][] getGraph() {
+		return graph;
+	}
+
+	public void setGraph(int[][] graph) {
+		this.graph = graph;
 	};
 
 }
