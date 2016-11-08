@@ -1,166 +1,345 @@
 package com.andersenlab.traniee.pathfinder;
 
 import java.util.Arrays;
-//import java.util.Arrays;
 import java.util.Random;
-import java.util.Scanner;
+//import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Overdark Класс реализующий граф
+ */
 public class Graph {
+    /**
+     * Логгер
+     */
+    public static final Logger log = Logger.getLogger(Graph.class);
+    /**
+     * Переменная расстояния, обозначающая отсутствие прямого пути между точками
+     */
+    private static final int block = 999;
+    /**
+     * Количество вершин в графе
+     */
+    private final int amt;
+    /**
+     * Массив расстояний между точками в графе
+     */
+    private final int[][] graph;
 
-	public static final Logger log = Logger.getLogger(Graph.class);
-	private static final int block = 999;
-	private int n;
+    /**
+     * @author Overdark Класс для создания объекта класса Graph
+     */
+    public static class Builder {
+        /**
+         * Количество вершин в графе
+         */
+        private int amt;
+        /**
+         * Массив расстояний между точками в графе
+         */
+        private int[][] graph;
 
-	private int[][] graph;
+        /**
+         * @param amt
+         *            Количество вершин нового графа
+         */
+        public Builder(int amt) {
+            this.amt = amt;
+            this.graph = new int[amt][amt];
 
-	private int[][] pathpoint;
+            for (int i = 0; i < amt; ++i) {
 
-	public Graph() {
+                for (int j = 0; j < amt; ++j) {
 
-		n = 10;
-		setGraph(new int[n][n]);
-		pathpoint = new int[n][n];
-		createNullMarch();
-		createNullgraph();
+                    if (i == j)
+                        continue;
 
-	}
+                    this.graph[i][j] = block;
+                }
+            }
 
-	public Graph(int n) {
+        }
 
-		this.n = n;
-		setGraph(new int[n][n]);
-		pathpoint = new int[n][n];
-		createNullMarch();
-		createNullgraph();
-	}
+        /**
+         * Метод позволяет задать расстояние между точками i j
+         * 
+         * @param i
+         *            индекс точки
+         * @param j
+         *            индекс точки
+         * @param s
+         *            расстояние между точками i j
+         * @return
+         */
+        public Builder edge(int i, int j, int s) {
+            this.graph[i][j] = s;
+            return this;
+        }
 
-	private int[][] createNullMarch() {
+        /**
+         * Заполняет граф случайными расстояниями
+         * 
+         * @return this
+         */
+        public Builder random() {
 
-		for (int i = 0; i < n; ++i) {
+            Random r = new Random();
 
-			for (int j = 0; j < n; ++j) {
-				pathpoint[i][j] = -1;
-			}
+            for (int i = 0; i < amt; ++i) {
 
-		}
-		return pathpoint;
-	};
+                for (int j = 0; j < amt; ++j) {
 
-	private int[][] createNullgraph() {
+                    if (j == i || r.nextInt(2) == 0)
+                        continue;
+                    this.graph[i][j] = r.nextInt(50) + 1;
+                }
+            }
+            return this;
+        }
 
-		for (int i = 0; i < n; ++i) {
+        /**
+         * @param Экземпляр
+         *            класса Graph, требующий оптимизации
+         * @return this для создания оптимизированного экземпляра класса Graph
+         */
+        public Builder shortWayGraph(Graph g) {
 
-			for (int j = 0; j < n; ++j) {
+            for (int i = 0; i < g.amt; ++i) {
 
-				if (i == j)
-					continue;
+                for (int j = 0; j < g.amt; ++j) {
 
-				getGraph()[i][j] = block;
-			}
+                    this.graph[i][j] = g.graph[i][j];
+                }
+            }
+            for (int i = 0; i < g.amt; ++i) {
 
-		}
-		return getGraph();
-	};
+                for (int j = 0; j < g.amt; ++j) {
 
-	public static Graph buildRandomGraph(Graph g) {
+                    for (int k = 0; k < g.amt; ++k) {
 
-		Random r = new Random();
+                        if (this.graph[j][k] > this.graph[j][i] + this.graph[i][k]) {
 
-		for (int i = 0; i < g.n; ++i) {
+                            this.graph[j][k] = this.graph[j][i] + this.graph[i][k];
+                        }
+                    }
+                }
+            }
 
-			for (int j = 0; j < g.n; ++j) {
+            return this;
+        }
 
-				if (j <= i) {
+        /**
+         * @return Экземпляр класса Graph
+         */
+        public Graph build() {
+            return new Graph(this);
+        }
 
-					continue;
-				} else if (r.nextInt(2) > 0) {
-					g.getGraph()[i][j] = r.nextInt(50) + 1;
-				}
-				g.getGraph()[j][i] = g.getGraph()[i][j];
+    }
 
-			}
-		}
-		return g;
-	};
+    /**
+     * @param Builder
+     */
+    public Graph(Builder builder) {
+        amt = builder.amt;
+        graph = builder.graph;
+    }
 
-	public static Graph buildUsersGraph(Graph g) {
+    /**
+     * Вывести на экран таблицу расстояний графа g
+     * 
+     * @param g
+     */
+    public static void printGraph(Graph g) {
 
-		@SuppressWarnings("resource")
-		Scanner sc = new Scanner(System.in);
+        log.info("Start print graph:");
+        for (int i = 0; i < g.amt; ++i) {
+            log.info(Arrays.toString(g.graph[i]));
+        }
+    }
 
-		for (int i = 0; i < g.n; ++i) {
-			
-			for (int j = 0; j < g.n; ++j) {
+    /**
+     * 
+     * @return 2х мерный Массив расстояний graph
+     */
+    public int[][] getGraph() {
+        return graph;
+    }
 
-				if (i == j) {
-					continue;
-				
-				} else {
-					log.info("Введите расстояние (" + i + ") - (" + j + "): ");
-					if (sc.hasNextInt()) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
 
-						g.getGraph()[i][j] = sc.nextInt();
+        int result = 11;
 
-					} else {
-						log.info("какой-то текст");
-					}
+        for (int i = 0; i < amt; ++i) {
 
-				}
-			}
-		}
+            for (int j = 0; j < amt; ++j) {
 
-		return g;
+                result = 31 * result + graph[i][j];
+            }
+        }
+        return result;
+    }
 
-	};
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o) {
 
-	public static void printGraph(Graph g) {
+        if (!(o instanceof Graph))
+            return false;
 
-		log.info("Start print graph:");
-		for (int i = 0; i < g.n; ++i) {
-			log.info(Arrays.toString(g.getGraph()[i]));
+        if (amt != ((Graph) o).amt)
+            return false;
 
-		}
+        for (int i = 0; i < amt; ++i) {
 
-	};
+            for (int j = 0; j < amt; ++j) {
 
-	public static void printGraphPp(Graph g) {
+                if (graph[i][j] != ((Graph) o).graph[i][j])
+                    return false;
 
-		log.info("Start print pathpoint:");
-		for (int i = 0; i < g.n; ++i) {
-			log.info(Arrays.toString(g.pathpoint[i]));
+            }
+        }
 
-		}
+        return true;
+    }
 
-	};
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
 
-	public static Graph findShortWay(Graph g) {
+        String str = "Graph:\n";
 
-		for (int i = 0; i < g.n; ++i) {
+        for (int i = 0; i < amt; ++i) {
+            str += (Arrays.toString(graph[i]) + "\n");
+        }
 
-			for (int j = 0; j < g.n; ++j) {
+        str += "End\n";
+        return str;
 
-				for (int k = 0; k < g.n; ++k) {
-
-					if (g.getGraph()[j][k] > g.getGraph()[j][i] + g.getGraph()[i][k]) {
-
-						g.getGraph()[j][k] = g.getGraph()[j][i] + g.getGraph()[i][k];
-						g.pathpoint[j][k] = i;
-					}
-
-				}
-			}
-		}
-		return g;
-	}
-
-	public int[][] getGraph() {
-		return graph;
-	}
-
-	public void setGraph(int[][] graph) {
-		this.graph = graph;
-	};
+    }
 
 }
+// Graph g = new Graph.Builder();
+
+// private Graph() {
+
+// n = 10;
+// setGraph(new int[n][n]);
+// pathpoint = new int[n][n];
+// createNullMarch();
+// createNullgraph();
+// }
+
+// public Graph(int n) {
+//
+// this.n = n;
+// setGraph(new int[n][n]);
+// pathpoint = new int[n][n];
+// createNullMarch();
+// createNullgraph();
+// }
+
+// private int[][] createNullMarch() {
+//
+// for (int i = 0; i < amt; ++i) {
+//
+// for (int j = 0; j < amt; ++j) {
+// pathpoint[i][j] = -1;
+// }
+// }
+// return pathpoint;
+// };
+
+// public static Graph buildRandomGraph(Graph g) {
+//
+// Random r = new Random();
+//
+// for (int i = 0; i < g.amt; ++i) {
+//
+// for (int j = 0; j < g.amt; ++j) {
+//
+// if (j <= i) {
+//
+// continue;
+// } else if (r.nextInt(2) > 0) {
+// g.getGraph()[i][j] = r.nextInt(50) + 1;
+// }
+// g.getGraph()[j][i] = g.getGraph()[i][j];
+// }
+// }
+// return g;
+// };
+
+// public static Graph buildUsersGraph(Graph g) {
+//
+// @SuppressWarnings("resource")
+// Scanner sc = new Scanner(System.in);
+//
+// for (int i = 0; i < g.amt; ++i) {
+//
+// for (int j = 0; j < g.amt; ++j) {
+//
+// if (i == j) {
+// continue;
+//
+// } else {
+// log.info("Введите расстояние (" + i + ") - (" + j + "): ");
+// if (sc.hasNextInt()) {
+//
+// g.getGraph()[i][j] = sc.nextInt();
+//
+// } else {
+// log.info("какой-то текст");
+// }
+// }
+// }
+// }
+// return g;
+// };
+
+// public static void printGraphPp(Graph g) {
+//
+// log.info("Start print pathpoint:");
+// for (int i = 0; i < g.amt; ++i) {
+// log.info(Arrays.toString(g.pathpoint[i]));
+// }
+// };
+
+// public static Graph findShortWay(Graph g) {
+//
+// for (int i = 0; i < g.amt; ++i) {
+//
+// for (int j = 0; j < g.amt; ++j) {
+//
+// for (int k = 0; k < g.amt; ++k) {
+//
+// if (g.getGraph()[j][k] > g.getGraph()[j][i] + g.getGraph()[i][k]) {
+//
+// g.getGraph()[j][k] = g.getGraph()[j][i] + g.getGraph()[i][k];
+// g.pathpoint[j][k] = i;
+// }
+// }
+// }
+// }
+// return g;
+// }
+
+//
+// public void setGraph(int[][] graph) {
+// this.graph = graph;
+// };

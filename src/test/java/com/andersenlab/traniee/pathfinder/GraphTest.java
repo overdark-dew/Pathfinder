@@ -9,7 +9,7 @@ public class GraphTest {
 	@Test
 	public void testConstruct() {
 		
-		Graph notnull = new Graph();
+		Graph notnull = new Graph.Builder(5).build();
 		
 	assertNotNull("Not null", notnull);
 	
@@ -17,18 +17,13 @@ public class GraphTest {
 	
 	public void testNotEquals() {
 		
-		int n = 2;
+		int n = 3;
 		
-		Graph test = new Graph(n);
-		Graph expect = new Graph(n);
+		Graph test = new Graph.Builder(n).edge(1,2,5).build();
+		Graph expect = new Graph.Builder(n).edge(2,1,5).build();
 		
-		test.getGraph()[0][1] = 1;
-		expect.getGraph()[0][1] = 2;
 		
-		int ex = expect.getGraph()[0][1];
-		int te = test.getGraph()[0][1];
-		
-		assertFalse(ex == te);
+		assertEquals(expect, test);
 	}
         
 	
@@ -36,7 +31,7 @@ public class GraphTest {
 	public void testOnePointGraph() {
 		
 		
-		Graph onepoint = new Graph(1);
+		Graph onepoint = new Graph.Builder(1).build();
 		
 	
 	int on = onepoint.getGraph()[0][0];
@@ -47,8 +42,8 @@ public class GraphTest {
 	@Test
 	public void testZeroPointGraph() {
 		
-		int n = 0;
-		Graph zeropoint = new Graph(n);
+		
+		Graph zeropoint = new Graph.Builder(0).build();
 		
 	
 	//teger ze = zeropoint.getGraph()[0][0];
@@ -61,29 +56,13 @@ public class GraphTest {
 
 		int n = 3;
 
-		Graph test = new Graph(n);
-		Graph expect = new Graph(n);
-
-		test.getGraph()[0][1] = 1;
-		test.getGraph()[0][2] = 2;
-		test.getGraph()[1][2] = 5;
-		test.getGraph()[1][0] = 1;
-		test.getGraph()[2][0] = 2;
-		test.getGraph()[2][1] = 5;
-
-		expect.getGraph()[0][1] = 1;
-		expect.getGraph()[0][2] = 2;
-		expect.getGraph()[1][2] = 3;
-		expect.getGraph()[1][0] = 1;
-		expect.getGraph()[2][0] = 2;
-		expect.getGraph()[2][1] = 3;
-
-		Graph.findShortWay(test);
+		Graph begin = new Graph.Builder(n).edge(0, 1, 1).edge(0, 2, 2).edge(1, 2, 5).edge(1, 0, 1).edge(2, 0, 2).edge(2, 1, 5).build();
+		Graph test = new Graph.Builder(n).shortWayGraph(begin).build();
+		Graph expect = new Graph.Builder(n).edge(0, 1, 1).edge(0, 2, 2).edge(1, 2, 3).edge(1, 0, 1).edge(2, 0, 2).edge(2, 1, 3).build();
 		
+		for (int i = 0; i < n; ++i) {
 
-		for (int i = 0; i < 3; ++i) {
-
-			for (int j = 0; j < 3; ++j) {
+			for (int j = 0; j < n; ++j) {
 
 				int ex = expect.getGraph()[i][j];
 				int te = test.getGraph()[i][j];
