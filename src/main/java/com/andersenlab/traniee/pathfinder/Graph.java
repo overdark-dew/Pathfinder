@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Overdark Класс реализующий граф
  */
-public class Graph {
+class Graph {
     /**
      * Логгер
      */
@@ -121,6 +121,34 @@ public class Graph {
                         if (this.graph[j][k] > this.graph[j][i] + this.graph[i][k]) {
 
                             this.graph[j][k] = this.graph[j][i] + this.graph[i][k];
+                            //p.pathpoint[j][k] =i;
+                        }
+                    }
+                }
+            }
+
+            return this;
+        }
+        
+        public Builder shortWayGraph(Graph g, Pathpoint p) {
+
+            for (int i = 0; i < g.amt; ++i) {
+
+                for (int j = 0; j < g.amt; ++j) {
+
+                    this.graph[i][j] = g.graph[i][j];
+                }
+            }
+            for (int i = 0; i < g.amt; ++i) {
+
+                for (int j = 0; j < g.amt; ++j) {
+
+                    for (int k = 0; k < g.amt; ++k) {
+
+                        if (this.graph[j][k] > this.graph[j][i] + this.graph[i][k]) {
+
+                            this.graph[j][k] = this.graph[j][i] + this.graph[i][k];
+                            p.pathpoint[j][k].add(i);
                         }
                     }
                 }
@@ -151,21 +179,21 @@ public class Graph {
      * 
      * @param g
      */
-    public static void printGraph(Graph g) {
-
-        log.info("Start print graph:");
-        for (int i = 0; i < g.amt; ++i) {
-            log.info(Arrays.toString(g.graph[i]));
-        }
-    }
+//    public static void printGraph(Graph g) {
+//
+//        log.info("Start print graph:");
+//        for (int i = 0; i < g.amt; ++i) {
+//            log.info(Arrays.toString(g.graph[i]));
+//        }
+//    }
 
     /**
      * 
      * @return 2х мерный Массив расстояний graph
      */
-    public int[][] getGraph() {
-        return graph;
-    }
+//    public int[][] getGraph() {
+//        return graph;
+//    }
 
     /*
      * (non-Javadoc)
