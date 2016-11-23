@@ -27,7 +27,7 @@ class Path {
      * @author Overdark
      * Отрезок маршрута, содержит две точки и расстояние между ними
      */
-    class Point {
+    private final class Point {
         private int start; // Начальная точка
         private int finish; // конечная точка
         private int lenght; // Расстояние
