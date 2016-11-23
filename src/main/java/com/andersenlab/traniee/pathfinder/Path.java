@@ -8,23 +8,33 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Overdark
- *
+ * Принимает граф и две точки между которыми следует проложить маршрут
  */
 class Path {
-
-    // class Graph;
+    
+    /**
+     * Логгер
+     */
     public static final Logger log = Logger.getLogger(Path.class);
-    // private static final int block = 999;
+    
 
-    // private int amt;
-
+    /**
+     * Собирает маршрут из точек
+     */
     private LinkedList<Point> path;// = new LinkedList[amt][amt];
 
+    /**
+     * @author Overdark
+     * Отрезок маршрута, содержит две точки и расстояние между ними
+     */
     class Point {
         private int start; // Начальная точка
         private int finish; // конечная точка
         private int lenght; // Расстояние
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
         @Override
         public String toString() {
 
@@ -43,24 +53,46 @@ class Path {
     public Path(Graph g, int s, int f) {
 
         int[][] pathpoint = new int[g.getAmt()][g.getAmt()];
+        int[][] graph = new int[g.getAmt()][g.getAmt()];
+
+        for (int i = 0; i < g.getAmt(); ++i) {
+
+            for (int j = 0; j < g.getAmt(); ++j) {
+
+                graph[i][j] = g.getLenght(i, j);
+
+            }
+        }
+        
+        for (int i = 0; i < g.getAmt(); ++i) {
+
+            for (int j = 0; j < g.getAmt(); ++j) {
+
+                pathpoint[i][j] = -1;
+
+            }
+        }
 
         this.path = new LinkedList<Point>();
 
         for (int i = 0; i < g.getAmt(); ++i) {
 
             for (int j = 0; j < g.getAmt(); ++j) {
+                //System.out.println();
 
                 for (int k = 0; k < g.getAmt(); ++k) {
 
-                    if (g.getLenght(j, k) > g.getLenght(j, i) + g.getLenght(i, k)) {
+                    // if (g.getLenght(j, k) > g.getLenght(j, i) +
+                    // g.getLenght(i, k)) {
+                    if (graph[j][k] > graph[j][i] + graph[i][k]) {
 
-                        // this.graph[j][k] = this.graph[j][i] +
-                        // this.graph[i][k];
+                        graph[j][k] = graph[j][i] + graph[i][k];
                         pathpoint[j][k] = i;
-                    } else {
-                        pathpoint[j][k] = -1;
-                    }
+                        
+                    } 
+                    //System.out.print(pathpoint[j][k] + " ");
                 }
+                
             }
         }
 
@@ -84,10 +116,14 @@ class Path {
         }
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        String str = new String();
+        String str = "You path: \n";
 
+        
         Iterator<Point> iter = path.iterator();
         while (iter.hasNext()) {
             str = str + iter.next().toString();
