@@ -25,7 +25,8 @@ class Path {
         private int finish; // конечная точка
         private int lenght; // Расстояние
 
-        public String toString(Point p) {
+        @Override
+        public String toString() {
 
             String str = new String();
             str = "From point (" + start + ") to point (" + finish + ") leght = " + lenght + "\n";
@@ -39,24 +40,25 @@ class Path {
         }
     }
 
-    
     public Path(Graph g, int s, int f) {
 
         int[][] pathpoint = new int[g.getAmt()][g.getAmt()];
 
         this.path = new LinkedList<Point>();
 
-        for (int i = 1; i < g.getAmt() + 1; ++i) {
+        for (int i = 0; i < g.getAmt(); ++i) {
 
             for (int j = 0; j < g.getAmt(); ++j) {
 
                 for (int k = 0; k < g.getAmt(); ++k) {
 
-                    if (g.getLenght(j, k) > g.getLenght(j, i - 1) + g.getLenght(i - 1, k)) {
+                    if (g.getLenght(j, k) > g.getLenght(j, i) + g.getLenght(i, k)) {
 
                         // this.graph[j][k] = this.graph[j][i] +
                         // this.graph[i][k];
                         pathpoint[j][k] = i;
+                    } else {
+                        pathpoint[j][k] = -1;
                     }
                 }
             }
@@ -66,7 +68,7 @@ class Path {
 
         for (int end = f;;) {
 
-            if (pathpoint[s][f] == 0) {
+            if (pathpoint[s][f] == -1) {
                 Point point = new Point(s, f, g.getLenght(s, f));
                 path.add(point);
                 s = f;
@@ -81,22 +83,22 @@ class Path {
 
         }
     }
-    
-    //@SuppressWarnings("unchecked")
-    public String toString(Path p){
+
+    @Override
+    public String toString() {
         String str = new String();
-        
-        Iterator<Point> iter = p.path.iterator();
-        while (iter.hasNext()){
+
+        Iterator<Point> iter = path.iterator();
+        while (iter.hasNext()) {
             str = str + iter.next().toString();
         }
         return str;
-        
+
     }
 
-    //public class Builder {
-    //}
-    
+    // public class Builder {
+    // }
+
     // private int[][] createNullPath() {
     //
     // for (int i = 0; i < amt; ++i) {

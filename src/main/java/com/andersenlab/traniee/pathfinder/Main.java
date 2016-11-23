@@ -11,25 +11,22 @@ public class Main {
         Graph random = new Graph.Builder(20).random().edge(1, 2, 5).build();
         Graph optimal = new Graph.Builder(20).shortWayGraph(random).build();
 
-//        Graph eq1 = new Graph.Builder(20).edge(1, 2, 20).build();
-//        Graph eq2 = new Graph.Builder(20).edge(1, 2, 20).build();
+        // Graph eq1 = new Graph.Builder(20).edge(1, 2, 20).build();
+        // Graph eq2 = new Graph.Builder(20).edge(1, 2, 20).build();
 
-        Path p1 = new Path(random, 2 ,8);
-        
-        Path.log.info(p1);
-        
+        Path p1 = new Path(random, 2, 6);
+
         Graph.log.info(random);
         Graph.log.info(optimal);
+        Path.log.info(p1);
 
-//        Graph.log.info(random.hashCode());
-//        Graph.log.info(optimal.hashCode());
-//
-//        Graph.log.info(eq1.equals(eq1));
-//        Graph.log.info(eq1.equals(eq2));
-//        Graph.log.info(eq1.equals(optimal));
+        // Graph.log.info(random.hashCode());
+        // Graph.log.info(optimal.hashCode());
+        //
+        // Graph.log.info(eq1.equals(eq1));
+        // Graph.log.info(eq1.equals(eq2));
+        // Graph.log.info(eq1.equals(optimal));
 
-        
-        
     }
 
 }
