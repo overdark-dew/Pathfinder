@@ -26,6 +26,7 @@ class Graph {
      * Массив расстояний между точками в графе
      */
     private final int[][] graph;
+    //private List<String>();
 
     /**
      * @author Overdark Класс для создания объекта класса Graph
@@ -130,32 +131,32 @@ class Graph {
             return this;
         }
         
-        public Builder shortWayGraph(Graph g, Pathpoint p) {
-
-            for (int i = 0; i < g.amt; ++i) {
-
-                for (int j = 0; j < g.amt; ++j) {
-
-                    this.graph[i][j] = g.graph[i][j];
-                }
-            }
-            for (int i = 0; i < g.amt; ++i) {
-
-                for (int j = 0; j < g.amt; ++j) {
-
-                    for (int k = 0; k < g.amt; ++k) {
-
-                        if (this.graph[j][k] > this.graph[j][i] + this.graph[i][k]) {
-
-                            this.graph[j][k] = this.graph[j][i] + this.graph[i][k];
-                            p.pathpoint[j][k].add(i);
-                        }
-                    }
-                }
-            }
-
-            return this;
-        }
+//        public Builder shortWayGraph(Graph g, Path p) {
+//
+//            for (int i = 0; i < g.amt; ++i) {
+//
+//                for (int j = 0; j < g.amt; ++j) {
+//
+//                    this.graph[i][j] = g.graph[i][j];
+//                }
+//            }
+//            for (int i = 0; i < g.amt; ++i) {
+//
+//                for (int j = 0; j < g.amt; ++j) {
+//
+//                    for (int k = 0; k < g.amt; ++k) {
+//
+//                        if (this.graph[j][k] > this.graph[j][i] + this.graph[i][k]) {
+//
+//                            this.graph[j][k] = this.graph[j][i] + this.graph[i][k];
+//                            p.pathpoint[j][k].add(i);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            return this;
+//        }
 
         /**
          * @return Экземпляр класса Graph
@@ -260,8 +261,21 @@ class Graph {
         return str;
 
     }
-
+    public int getAmt() {
+       int amt = this.amt;
+        
+        return amt;
+    } 
+    
+    public int getLenght(int i, int j) {
+        int lenght = this.graph[i][j];
+         
+         return lenght;
+     } 
+    
 }
+
+
 // Graph g = new Graph.Builder();
 
 // private Graph() {
