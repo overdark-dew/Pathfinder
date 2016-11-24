@@ -22,12 +22,14 @@ public class Main {
         
         Path p1 = new Path(random, 4, 5);
         Path p2 = new Path(random, 18, 3);
+        Path p3 = new Path(random, 1, 1);
 
         //Graph.log.info(random);
         Graph.log.info(optimal);
         Graph.log.info(random);
         Path.log.info(p1);
         Path.log.info(p2);
+        Path.log.info(p3);
 
         // Graph.log.info(random.hashCode());
         // Graph.log.info(optimal.hashCode());

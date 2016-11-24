@@ -24,6 +24,16 @@ class Path {
     private LinkedList<Point> path;// = new LinkedList[amt][amt];
 
     /**
+     * Общая длина пути
+     */
+    private int allPath;
+   
+    public int getAllPath() {
+        int allPath = this.allPath;
+        return allPath;
+    }
+
+    /**
      * @author Overdark
      * Отрезок маршрута, содержит две точки и расстояние между ними
      */
@@ -73,6 +83,8 @@ class Path {
             }
         }
 
+        
+        
         this.path = new LinkedList<Point>();
 
         for (int i = 0; i < g.getAmt(); ++i) {
@@ -98,6 +110,8 @@ class Path {
 
         // Point point = new Point(s, f, g.getLenght(s, f)
 
+        this.allPath = graph[s][f];
+        
         for (int end = f;;) {
 
             if (pathpoint[s][f] == -1) {
@@ -122,12 +136,13 @@ class Path {
     @Override
     public String toString() {
         String str = "You path: \n";
-
+        
         
         Iterator<Point> iter = path.iterator();
         while (iter.hasNext()) {
             str = str + iter.next().toString();
         }
+        str = str + "All Path lenght - " + allPath;
         return str;
 
     }
